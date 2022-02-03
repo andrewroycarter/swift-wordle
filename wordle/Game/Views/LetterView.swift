@@ -46,7 +46,7 @@ class LetterView: UIView {
     
     private (set) var letter: Character?
     private var resultView: LetterResultView?
-    private (set) var currentResult: Result?
+    var currentResult: Result?
     
     // MARK: - UIView Overrides
     
@@ -67,16 +67,18 @@ class LetterView: UIView {
         return view
     }
     
-    func style(for result: Result) {
-        currentResult = result
-        
+    func styleForCurrentResult(animationCompletion: (() -> Void)? = nil) {
+        guard let currentResult = currentResult else {
+            return
+        }
+
         let resultView = makeResultView()
         guard let oldResultView = self.resultView else {
             fatalError("Failed to obtain previous result view to transition from.")
         }
         resultView.label.text = oldResultView.label.text
         resultView.label.textColor = .white
-        resultView.backgroundColor = result.backgroundColor
+        resultView.backgroundColor = currentResult.backgroundColor
         resultView.translatesAutoresizingMaskIntoConstraints = false
         self.resultView = resultView
         addSubview(resultView)
@@ -88,9 +90,9 @@ class LetterView: UIView {
             resultView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
         
-        
-        
-        UIView.transition(from: oldResultView, to: resultView, duration: 0.3, options: .transitionFlipFromTop, completion: nil)
+        UIView.transition(from: oldResultView, to: resultView, duration: 0.3, options: .transitionFlipFromTop, completion: { _ in
+            animationCompletion?()
+        })
     }
     
     private func addEmptyBorderResultView() {

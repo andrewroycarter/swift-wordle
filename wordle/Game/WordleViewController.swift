@@ -137,10 +137,17 @@ class WordleViewController: UIViewController, UITextFieldDelegate, WordleTextFie
  
             self.present(activityController, animated: true, completion: nil)
         }))
-
-        present(controller, animated: true)
+        
+        if result == .win {
+            activeGuessView?.performWinAnimation()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.present(controller, animated: true)
+            }
+        } else {
+            present(controller, animated: true)
+        }
     }
-    
+
     private func resetGame() {
         setNewWord()
         setupGuessViews()
@@ -169,25 +176,26 @@ class WordleViewController: UIViewController, UITextFieldDelegate, WordleTextFie
             fatalError("Attempting to use guess view that is not in play")
         }
         
-        let guessResult = activeGuessView.attemptGuess(for: word)
-        let numberOfGuesses = Configuration.currentConfiguration.numberOfGuesses
-        let hasMoreGuesses = currentGuessViewIndex < numberOfGuesses - 1
-        
-        switch (guessResult, hasMoreGuesses) {
-        case (.invalidWord, _):
-            displayInvalidWordError(for: activeGuessView.guessedWord ?? "")
+        activeGuessView.attemptGuess(for: word) { guessResult in
+            let numberOfGuesses = Configuration.currentConfiguration.numberOfGuesses
+            let hasMoreGuesses = currentGuessViewIndex < numberOfGuesses - 1
             
-        case (.correct, _):
-            didFinishGame(with: .win)
-            
-        case (.incorrect, true):
-            self.activeGuessView = guessViews[currentGuessViewIndex + 1]
-            
-        case (.incorrect, false):
-            didFinishGame(with: .loose)
-            
-        case (.notEnoughLetters, _):
-            break
+            switch (guessResult, hasMoreGuesses) {
+            case (.invalidWord, _):
+                self.displayInvalidWordError(for: activeGuessView.guessedWord ?? "")
+                
+            case (.correct, _):
+                self.didFinishGame(with: .win)
+                
+            case (.incorrect, true):
+                self.activeGuessView = self.guessViews[currentGuessViewIndex + 1]
+                
+            case (.incorrect, false):
+                self.didFinishGame(with: .loose)
+                
+            case (.notEnoughLetters, _):
+                break
+            }
         }
         
         return true

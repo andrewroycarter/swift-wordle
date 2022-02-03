@@ -19,8 +19,9 @@ class GuessView: UIView {
     // MARK: - Properties
     
     @IBOutlet private var stackView: UIStackView!
-    private var letterViews: [LetterView] = []
+    private (set) var letterViews: [LetterView] = []
     private var letters: [Character] = []
+    var animator: UIDynamicAnimator?
     
     var hasAllLettersEntered: Bool {
         return letters.count == Configuration.currentConfiguration.numberOfLetters
@@ -51,6 +52,24 @@ class GuessView: UIView {
     }
     
     // MARK: - Instance Methods
+    func performWinAnimation() {
+        let animator = UIDynamicAnimator(referenceView: self)
+        animator.addBehavior(UIGravityBehavior(items: letterViews))
+        let collisionBehavior = UICollisionBehavior(items: letterViews)
+        collisionBehavior.addBoundary(withIdentifier: NSString("floor"),
+                                      from: .init(x: 0.0, y: bounds.height),
+                                      to: .init(x: bounds.maxX, y: bounds.height))
+        animator.addBehavior(collisionBehavior)
+        self.animator = animator
+        
+        let behaviour = UIDynamicItemBehavior(items: letterViews)
+        behaviour.elasticity = 0.4
+        letterViews.forEach { view in
+            behaviour.addLinearVelocity(.init(x: 0.0, y: Double.random(in: 200...1500)),
+                                        for: view)
+        }
+        animator.addBehavior(behaviour)
+    }
     
     private func setupLetterViews() {
         let nib = UINib(nibName: "LetterView", bundle: nil)
@@ -91,21 +110,23 @@ class GuessView: UIView {
         letterViews[index].deleteLetter()
     }
     
-    func attemptGuess(for correctWord: String) -> GuessResult {
+    func attemptGuess(for correctWord: String, animationCompletion: @escaping (GuessResult) -> Void) {
         let correctCharacters = Array(correctWord)
         guard correctCharacters.count == Configuration.currentConfiguration.numberOfLetters else {
-            return .notEnoughLetters
+            animationCompletion(.notEnoughLetters)
+            return
         }
         
         let guessedWord = String(letters).lowercased()
         guard Configuration.currentConfiguration.words.contains(guessedWord) else {
-            return .invalidWord
+            animationCompletion(.invalidWord)
+            return
         }
         
         // Used to track "used" letters. This is to prevent too many yellow squares or
         // yellow squares when the letter has already been used for green.
         var usedIndicies: [Int] = []
-        
+                
         // Check for correct positioned "green" letters first, then we can "consume" that index.
         for (index, element) in correctCharacters.enumerated() {
             let letterView = letterViews[index]
@@ -116,7 +137,7 @@ class GuessView: UIView {
             }
             
             usedIndicies.append(index)
-            letterView.style(for: .correctLetter)
+            letterView.currentResult = .correctLetter
         }
         
         // Now we need only worry about yellow or black squares. As we consume yellow squares
@@ -131,15 +152,25 @@ class GuessView: UIView {
                     .enumerated()
                     .filter({ !usedIndicies.contains($0.offset) })
                     .first(where: { $0.element == letterView.letter }) else {
-                        letterView.style(for: .letterNotInWord)
+                        letterView.currentResult = .letterNotInWord
                         continue
                     }
            
-            letterView.style(for: .letterInWord)
+            letterView.currentResult = .letterInWord
             usedIndicies.append(matchingElement.offset)
         }
         
-        return guessedWord == correctWord ? .correct : .incorrect
+        
+        letterViews.enumerated().forEach { (offset, view) in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05 * Double(offset)) {
+                view.styleForCurrentResult {
+                    if view == self.letterViews.last {
+                        let result: GuessResult = guessedWord == correctWord ? .correct : .incorrect
+                        animationCompletion(result)
+                    }
+                }
+            }
+        }
     }
     
 }
