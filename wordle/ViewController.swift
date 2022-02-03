@@ -22,7 +22,7 @@ class ViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDele
     private let bottomPadding = 20.0
     private var guessViews: [GuessView] = []
     private var activeGuessView: GuessView?
-    private var word = "floss" //Configuration.currentConfiguration.words.randomElement() ?? ""
+    private var word = Configuration.currentConfiguration.words.randomElement() ?? ""
     
     // MARK: - UIViewController Overrides
     
