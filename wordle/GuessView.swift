@@ -92,7 +92,7 @@ class GuessView: UIView {
     }
     
     func attemptGuess(for correctWord: String) -> GuessResult {
-        let correctCharactors = Array(correctWord)
+        var correctCharactors = Array(correctWord)
         guard correctCharactors.count == Configuration.currentConfiguration.numberOfLetters else {
             return .notEnoughLetters
         }
@@ -102,25 +102,36 @@ class GuessView: UIView {
             return .invalidWord
         }
         
+        var usedIndicies: [Int] = []
+        
         for (index, element) in correctCharactors.enumerated() {
             let letterView = letterViews[index]
             
             let isCorrectLetter = letterView.letter == element
-            let wordHasLetter = correctCharactors.contains(where: { $0 == letterView.letter })
-            
-            let result: LetterView.Result
-            switch (isCorrectLetter, wordHasLetter) {
-            case (true, _):
-                result = .correctLetter
-                
-            case (false, true):
-                result = .letterInWord
-                
-            case (false, false):
-                result = .letterNotInWord
+            guard isCorrectLetter else {
+                continue
             }
             
-            letterView.style(for: result)
+            usedIndicies.append(index)
+            letterView.style(for: .correctLetter)
+        }
+        
+        for (index, _) in correctCharactors.enumerated() {
+            let letterView = letterViews[index]
+            guard letterView.currentResult != .correctLetter else {
+                continue
+            }
+            
+            guard let matchingElement = correctCharactors
+                    .enumerated()
+                    .filter({ !usedIndicies.contains($0.offset) })
+                    .first(where: { $0.element == letterView.letter }) else {
+                        letterView.style(for: .letterNotInWord)
+                        continue
+                    }
+           
+            letterView.style(for: .letterInWord)
+            usedIndicies.append(matchingElement.offset)
         }
         
         return guessedWord == correctWord ? .correct : .incorrect
