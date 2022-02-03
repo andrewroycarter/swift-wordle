@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		2230827727AC264A00D37C45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230827627AC264A00D37C45 /* AppDelegate.swift */; };
 		2230827927AC264A00D37C45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230827827AC264A00D37C45 /* SceneDelegate.swift */; };
-		2230827B27AC264A00D37C45 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230827A27AC264A00D37C45 /* ViewController.swift */; };
+		2230827B27AC264A00D37C45 /* WordleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230827A27AC264A00D37C45 /* WordleViewController.swift */; };
 		2230827E27AC264A00D37C45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2230827C27AC264A00D37C45 /* Main.storyboard */; };
 		2230828027AC264B00D37C45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2230827F27AC264B00D37C45 /* Assets.xcassets */; };
 		2230828327AC264B00D37C45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2230828127AC264B00D37C45 /* LaunchScreen.storyboard */; };
@@ -28,7 +28,7 @@
 		2230827327AC264A00D37C45 /* wordle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wordle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2230827627AC264A00D37C45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2230827827AC264A00D37C45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2230827A27AC264A00D37C45 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2230827A27AC264A00D37C45 /* WordleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordleViewController.swift; sourceTree = "<group>"; };
 		2230827D27AC264A00D37C45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2230827F27AC264B00D37C45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2230828227AC264B00D37C45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -74,24 +74,48 @@
 		2230827527AC264A00D37C45 /* wordle */ = {
 			isa = PBXGroup;
 			children = (
-				223082A027AC4DF100D37C45 /* words.txt */,
+				223082A327AC688400D37C45 /* Game */,
 				2230827627AC264A00D37C45 /* AppDelegate.swift */,
 				2230827827AC264A00D37C45 /* SceneDelegate.swift */,
-				2230827A27AC264A00D37C45 /* ViewController.swift */,
 				2230827C27AC264A00D37C45 /* Main.storyboard */,
 				2230827F27AC264B00D37C45 /* Assets.xcassets */,
 				2230828127AC264B00D37C45 /* LaunchScreen.storyboard */,
 				2230828427AC264B00D37C45 /* Info.plist */,
+			);
+			path = wordle;
+			sourceTree = "<group>";
+		};
+		223082A227AC686200D37C45 /* Dictionary */ = {
+			isa = PBXGroup;
+			children = (
+				223082A027AC4DF100D37C45 /* words.txt */,
+			);
+			path = Dictionary;
+			sourceTree = "<group>";
+		};
+		223082A327AC688400D37C45 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				223082A227AC686200D37C45 /* Dictionary */,
+				223082A427AC689300D37C45 /* Views */,
+				2230827A27AC264A00D37C45 /* WordleViewController.swift */,
+				2230829C27AC2B5F00D37C45 /* Configuration.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		223082A427AC689300D37C45 /* Views */ = {
+			isa = PBXGroup;
+			children = (
 				2230828C27AC27BD00D37C45 /* GuessView.swift */,
 				2230828E27AC27C900D37C45 /* GuessView.xib */,
 				2230829027AC28E200D37C45 /* LetterView.swift */,
 				2230829227AC28E900D37C45 /* LetterView.xib */,
 				2230829827AC29B000D37C45 /* LetterResultView.swift */,
 				2230829A27AC29B700D37C45 /* LetterResultView.xib */,
-				2230829C27AC2B5F00D37C45 /* Configuration.swift */,
 				2230829E27AC3DE000D37C45 /* WordleTextField.swift */,
 			);
-			path = wordle;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,7 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2230828D27AC27BD00D37C45 /* GuessView.swift in Sources */,
-				2230827B27AC264A00D37C45 /* ViewController.swift in Sources */,
+				2230827B27AC264A00D37C45 /* WordleViewController.swift in Sources */,
 				2230829927AC29B000D37C45 /* LetterResultView.swift in Sources */,
 				2230827727AC264A00D37C45 /* AppDelegate.swift in Sources */,
 				2230827927AC264A00D37C45 /* SceneDelegate.swift in Sources */,

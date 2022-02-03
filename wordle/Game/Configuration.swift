@@ -29,7 +29,10 @@ struct Configuration {
     let darkGreyColor = UIColor(red: 120.0 / 255.0, green: 124.0 / 255.0, blue: 126.0 / 255.0, alpha: 1.0)
     let lightGreyColor =  UIColor(red: 135.0 / 255.0, green: 138.0 / 255.0, blue: 140.0 / 255.0, alpha: 1.0)
 
-    private static func makeWordsList(fromFileNamed fileName: String, fileExtension: String) -> [String] {
+    /// Loads the given filename with the given extension and creates an array of words
+    ///
+    /// The file format should be a new line seperated list of words. Blank lines will be removed.
+    static func makeWordsList(fromFileNamed fileName: String, fileExtension: String) -> [String] {
         let string = try? String(contentsOfFile: Bundle.main.path(forResource: fileName, ofType: fileExtension) ?? "")
         return string?.components(separatedBy: "\n").filter({ !$0.isEmpty }).map({ $0.lowercased() }) ?? []
     }

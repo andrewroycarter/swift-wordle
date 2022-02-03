@@ -92,8 +92,8 @@ class GuessView: UIView {
     }
     
     func attemptGuess(for correctWord: String) -> GuessResult {
-        var correctCharactors = Array(correctWord)
-        guard correctCharactors.count == Configuration.currentConfiguration.numberOfLetters else {
+        let correctCharacters = Array(correctWord)
+        guard correctCharacters.count == Configuration.currentConfiguration.numberOfLetters else {
             return .notEnoughLetters
         }
         
@@ -102,9 +102,12 @@ class GuessView: UIView {
             return .invalidWord
         }
         
+        // Used to track "used" letters. This is to prevent too many yellow squares or
+        // yellow squares when the letter has already been used for green.
         var usedIndicies: [Int] = []
         
-        for (index, element) in correctCharactors.enumerated() {
+        // Check for correct positioned "green" letters first, then we can "consume" that index.
+        for (index, element) in correctCharacters.enumerated() {
             let letterView = letterViews[index]
             
             let isCorrectLetter = letterView.letter == element
@@ -116,13 +119,15 @@ class GuessView: UIView {
             letterView.style(for: .correctLetter)
         }
         
-        for (index, _) in correctCharactors.enumerated() {
+        // Now we need only worry about yellow or black squares. As we consume yellow squares
+        // from the left we mark the index so it isn't used again.
+        for (index, _) in correctCharacters.enumerated() {
             let letterView = letterViews[index]
             guard letterView.currentResult != .correctLetter else {
                 continue
             }
             
-            guard let matchingElement = correctCharactors
+            guard let matchingElement = correctCharacters
                     .enumerated()
                     .filter({ !usedIndicies.contains($0.offset) })
                     .first(where: { $0.element == letterView.letter }) else {

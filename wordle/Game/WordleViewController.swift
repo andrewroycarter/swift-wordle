@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDelegate {
+class WordleViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDelegate {
     
     enum GameResult {
         case win
@@ -18,23 +18,25 @@ class ViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDele
     
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var stackView: UIStackView!
+    
+    // Text field used to drive keyboard input that remains hidden the entire game.
     @IBOutlet private var hiddenTextField: UITextField!
-    private let bottomPadding = 20.0
+    
     private var guessViews: [GuessView] = []
     private var activeGuessView: GuessView?
-    private var word = Configuration.currentConfiguration.words.randomElement() ?? ""
+    
+    // Word is initially `""` to avoid optional handling. Word will / should be set before game begins.
+    private var word = ""
+    
+    // Padding on the bottom of the scroll view containing the game.
+    private let bottomPadding = 20.0
     
     // MARK: - UIViewController Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupGuessViews()
-        activeGuessView = guessViews.first
-        
-#if DEBUG
-        print("Current word is: \(word)")
-#endif
+        resetGame()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -45,6 +47,14 @@ class ViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDele
     }
     
     // MARK: - Instance Methods
+    
+    private func setNewWord() {
+        word = Configuration.currentConfiguration.words.randomElement() ?? ""
+        
+#if DEBUG
+        print("Current word is: \(word)")
+#endif
+    }
     
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,
@@ -132,12 +142,7 @@ class ViewController: UIViewController, UITextFieldDelegate, WordleTextFieldDele
     }
     
     private func resetGame() {
-        word = Configuration.currentConfiguration.words.randomElement() ?? ""
-        
-#if DEBUG
-        print("Current word is: \(word)")
-#endif
-        
+        setNewWord()
         setupGuessViews()
         activeGuessView = guessViews.first
     }
