@@ -148,10 +148,24 @@ class WordleViewController: UIViewController, UITextFieldDelegate, WordleTextFie
         }
     }
 
+    private func addCheatGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCheatGesture))
+        tapGesture.numberOfTapsRequired = 10
+        guessViews.first?.addGestureRecognizer(tapGesture)
+        guessViews.first?.isUserInteractionEnabled = true
+    }
+    
+    @objc private func didTapCheatGesture() {
+        let alertController = UIAlertController(title: nil, message: word, preferredStyle: .alert)
+        alertController.addAction(.init(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true)
+    }
+    
     private func resetGame() {
         setNewWord()
         setupGuessViews()
         activeGuessView = guessViews.first
+        addCheatGesture()
     }
     
     // MARK: - UITextFieldDelegate Methods

@@ -165,7 +165,7 @@ class GuessView: UIView {
         
         
         letterViews.enumerated().forEach { (offset, view) in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05 * Double(offset)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3 * Double(offset)) {
                 view.styleForCurrentResult {
                     if view == self.letterViews.last {
                         let result: GuessResult = guessedWord == correctWord ? .correct : .incorrect
