@@ -52,15 +52,18 @@ class GuessView: UIView {
     }
     
     // MARK: - Instance Methods
+    
     func performWinAnimation() {
         let animator = UIDynamicAnimator(referenceView: self)
+        self.animator = animator
+    
         animator.addBehavior(UIGravityBehavior(items: letterViews))
+        
         let collisionBehavior = UICollisionBehavior(items: letterViews)
         collisionBehavior.addBoundary(withIdentifier: NSString("floor"),
                                       from: .init(x: 0.0, y: bounds.height),
                                       to: .init(x: bounds.maxX, y: bounds.height))
         animator.addBehavior(collisionBehavior)
-        self.animator = animator
         
         let behaviour = UIDynamicItemBehavior(items: letterViews)
         behaviour.elasticity = 0.4
