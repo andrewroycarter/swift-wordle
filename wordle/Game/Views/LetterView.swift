@@ -122,7 +122,7 @@ class LetterView: UIView {
         
         resultView.translatesAutoresizingMaskIntoConstraints = false
         resultView.label.text = String(letter).uppercased()
-        resultView.backgroundColor = .white
+        resultView.backgroundColor = .systemBackground
         resultView.layer.borderWidth = 2.0
         resultView.layer.borderColor = Configuration.currentConfiguration.lightGreyColor.cgColor
         resultView.alpha = 0.8
